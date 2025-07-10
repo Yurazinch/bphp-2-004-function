@@ -28,8 +28,10 @@ function toString(array $b): void
     echo implode(PHP_EOL, $b) . PHP_EOL;
 }
 
-/*function deleteItem(string $c, array $items): void
+function deleteItem(string $c): void // удаление товара
 {
+    global $items;
+
     if (in_array($c, $items, true) !== false) {
         while (($key = array_search($c, $items, true)) !== false) {
             unset($items[$key]);
@@ -37,20 +39,43 @@ function toString(array $b): void
     }
 }
 
-function editItem(string $c, array $b): void // изменение названия
+function editItem(string $c): void // изменение названия
 {
+    global $items;
+
     $toChange = explode(',', $c);            
-    if(in_array($toChange[0], $b, true) !== false) {
-        while (($key = array_search(trim($toChange[0]), $b, true)) !== false) {
-            $b[$key] = trim($toChange[1]);
+    if(in_array($toChange[0], $items, true) !== false) {
+        while (($key = array_search(trim($toChange[0]), $items, true)) !== false) {
+            $items[$key] = trim($toChange[1]);
         }
     }
-}*/
+}
 
-/*function addQuantity(string $c, int $d): void // добавить количество
+function addQuantity(string $c): void // добавить количество
 {
+
+    global $items;
+
+    $toQuantity = explode(',', $c);
+    if(is_numeric(trim($toQuantity[1])) === true) {
+        $toQuantity[1] = (int)trim($toQuantity[1]);                
+        if(in_array(trim($toQuantity[0]), $items, true) !== false) {            
+            while (($key = array_search(trim($toQuantity[0]), $items, true)) === false) {
+                $items[$key] = trim($toQuantity[0]) . ": штук: $toQuantity[1]";
+                /*if(is_array($items[$key]) !== false) {
+                    $items[$key][$toQuantity[0]] += $toQuantity[1];                            
+                } else {
+                    $items[$key] = [trim($toQuantity[0]) => $toQuantity[1]];
+                }*/   
+            } 
+        } else {
+            toPrint('Такого товара нет в списке.');
+        }
+    } else {
+        toPrint('Количество указано неправильно.');
+    }
    
-}*/
+}
 
 
 do {
@@ -97,12 +122,8 @@ do {
             toPrint('Введение название товара для удаления из списка:');
             echo '> ';
             $itemName = trim(fgets(STDIN));
-            //deleteItem($itemName, $items);            
-            if (in_array($itemName, $items, true) !== false) {
-                while (($key = array_search($itemName, $items, true)) !== false) {
-                    unset($items[$key]);
-                }
-            }
+            deleteItem($itemName);
+            
             break;
 
         case OPERATION_PRINT:
@@ -119,37 +140,16 @@ do {
             toPrint('Введите название товара для изменения и новое название через запятую:');
             echo '> ';
             $names = trim(fgets(STDIN));
-            //editItem($names, $items);
-            $toChange = explode(',', $names);            
-            if(in_array($toChange[0], $items, true) !== false) {
-                while (($key = array_search(trim($toChange[0]), $items, true)) !== false) {
-                    $items[$key] = trim($toChange[1]);
-                }
-            }
+            editItem($names);
+            
             break;            
 
         case OPERATION_QUANTITY:
             toPrint('Введите название товара и количеcтво через запятую:');
             echo '> ';
             $withQuantity = trim(fgets(STDIN));
-            $toQuantity = explode(',', $withQuantity);
-            if(is_numeric(trim($toQuantity[1])) === true) {
-                $toQuantity[1] = (int)trim($toQuantity[1]);                
-                if(in_array(trim($toQuantity[0]), $items, true) !== false) {
-                    while (($key = array_search(trim($toQuantity[0]), $items, true)) !== false) {
-                        if(is_array($items[$key]) !== true) {
-                            $items[$key] = [trim($toQuantity[0]) => $toQuantity[1]];                            
-                        } else {
-                            $items[$key][$toQuantity[0]] += $toQuantity[1];
-                        }
-                    } 
-                } else {
-                    toPrint('Такого товара нет в списке.');
-                }
-            } else {
-                toPrint('Количество указано неправильно.');
-            }
-            
+            addQuantity($withQuantity);
+                        
             break; 
     }
 
