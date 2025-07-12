@@ -198,16 +198,14 @@ do {
             toPrint('Введите название товара для изменения и новое название через запятую:');
             echo '> ';
             $names = trim(fgets(STDIN));
-            editItem($names);
-            print_r($items);
+            editItem($names);            
             break;            
 
         case OPERATION_QUANTITY:
             toPrint('Введите название товара и количеcтво через запятую:');
             echo '> ';
             $withQuantity = trim(fgets(STDIN));
-            addQuantity($withQuantity);
-            print_r($items);            
+            addQuantity($withQuantity);                       
             break; 
     }
 
