@@ -41,25 +41,22 @@ function addItem(string $a): void
     global $items;
     
     $toAdd = explode(',', $a);
+    if (empty($toAdd[0])) {
+		toPrint('Не ввели название товара');
+		return;
+	}
     $item = (string)trim($toAdd[0]);
-    if(array_key_exists(1, $toAdd) !== false)
-    {
+    if(isset($toAdd[1]) || array_key_exists(1, $toAdd)) {
         $value = trim($toAdd[1]);
-    }
-    else
-    {
+    } else {
         $value = 0;
     }
-    if (is_numeric($value) !== false)
-    {
+    if (is_numeric($value) !== false) {
         $items[$item] = (int)$value;
-        if($items[$item] < 0)
-        {
+        if($items[$item] < 0) { 
             $items[$item] = 0;
         }
-    }
-    else
-    {
+    } else {
         toPrint('Правильно укажите количество');
     }
 }
